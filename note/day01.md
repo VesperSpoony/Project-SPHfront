@@ -146,35 +146,35 @@ Footer组件显示|隐藏，选择v-show|v-if
 9）路由传参
 params参数：路由需要占位，程序就崩了，属于URL当中一部分
 query参数：路由不需要占位，写法类似于ajax当中query参数
+
 路由传递参数先关面试题
      1:路由传递参数（对象写法）path是否可以结合params参数一起使用?
-     不可以：不能这样书写，程序会崩掉
+     不可以（应该用name）
+
      2:如何指定params参数可传可不传? 
+     如果路由要求传递但没有传递，url会有问题
+     在配置路由时，占位后添加一个问号?
+     path: '/search/:keyword?'
+
      3:params参数可以传递也可以不传递，但是如果传递是空串，如何解决？
-     4:如果指定name与params配置, 但params中数据是一个"", 无法跳转，路径会出问题
-     5: 路由组件能不能传递props数据?
-     
+     url会有问题
+     使用undefined解决
+     params: {keyword: '' || undefined},
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-     
-    
-
-
+     4:路由组件能不能传递props数据?
+     能，在配置路由时有三种方法
+    // 路由组件传递props参数
+    // 1.布尔值写法(params参数)
+    // props: true
+    // 2.对象写法(额外给路由组件传递props)
+    // props: {
+    //     a: 1,
+    //     b: 2
+    // }
+    // 3.函数写法(可以把params参数、query参数通过props传递给路由组件)
+    props: $route => {
+        return {
+            keyword: $route.params.keyword,
+            k: $route.query.k,
+        }
+    }

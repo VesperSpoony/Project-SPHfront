@@ -36,8 +36,22 @@ this.$route.meta
 这种异常，对于程序没有任何影响的。
 为什么会出现这种现象:
 由于vue-router最新版本3.5.2，引入了promise，当传递参数多次且重复，会抛出异常，因此出现上面现象,
-第一种解决方案：是给push函数，传入相应的成功的回调与失败的回调
-第一种解决方案可以暂时解决当前问题，但是以后再用push|replace还是会出现类似现象，因此我们需要从‘根’治病；
+第一种解决方案：是给push函数，传入相应的成功的回调与失败的回调，可以捕获到当前的错误
+第一种解决方案可以暂时解决当前问题，但是以后再用push|replace，编程式导航还是会出现类似现象，因此我们需要从‘根’治病；
+
+// VueRouter原型对象的push先保存一份
+let originPush = VueRouter.prototype.push;
+
+// 重写push | replace
+// 参数1：往哪里跳转
+VueRouter.prototype.push = function (location, resolve, reject) {
+    // call:调用函数一次，修改一次this指向
+    if (resolve && reject) {
+        originPush.call(this, location, resolve, reject);
+    } else {
+        originPush.call(this, location, () => { }, () => { });
+    }
+}
 
 
 
@@ -73,24 +87,3 @@ vuex:Vue官方提供的一个插件，插件可以管理项目共用数据。
 vuex：书写任何项目都需要vuex？
 项目大的时候，需要有一个地方‘统一管理数据’即为仓库store
 Vuex基本使用:
-
-     
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
