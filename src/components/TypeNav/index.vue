@@ -5,7 +5,7 @@
         <h2 class="all">全部商品分类</h2>
         <!-- 三级联动 -->
         <div class="sort">
-          <div class="all-sort-list2">
+          <div class="all-sort-list2" @click="goSearch">
             <div
               class="item"
               v-for="(c1, index) in categoryList"
@@ -13,7 +13,12 @@
               :class="{ cur: currentIndex == index }"
             >
               <h3 @mouseenter="changeIndex(index)">
-                <a href="">{{ c1.categoryName }}</a>
+                <a
+                  :data-categoryName="c1.categoryName"
+                  :data-category1Id="c1.categoryId"
+                  >{{ c1.categoryName }}</a
+                >
+                <!-- <router-link to="/search">{{ c1.categoryName }}</router-link> -->
               </h3>
               <!-- 二级、三级分类 -->
               <div
@@ -27,11 +32,21 @@
                 >
                   <dl class="fore">
                     <dt>
-                      <a href="">{{ c2.categoryName }}</a>
+                      <a
+                        :data-categoryName="c2.categoryName"
+                        :data-category2Id="c2.categoryId"
+                        >{{ c2.categoryName }}</a
+                      >
+                      <!-- <router-link to="/search">{{ c2.categoryName }}</router-link> -->
                     </dt>
                     <dd>
                       <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
-                        <a href="">{{ c3.categoryName }}</a>
+                        <a
+                          :data-categoryName="c3.categoryName"
+                          :data-category3Id="c3.categoryId"
+                          >{{ c3.categoryName }}</a
+                        >
+                        <!-- <router-link to="/search">{{ c3.categoryName }}</router-link> -->
                       </em>
                     </dd>
                   </dl>
@@ -57,6 +72,10 @@
 
 <script>
 import { mapState } from "vuex";
+// 把lodash全部功能引入
+// import _ from "lodash";
+// 按需加载
+import throttle from "lodash/throttle";
 export default {
   name: "TypeNav",
 
@@ -68,13 +87,38 @@ export default {
   },
   methods: {
     // 鼠标进入修改响应式数据currentIndex
-    changeIndex(index) {
+    changeIndex: throttle(function (index) {
       // index:鼠标移上某一个一级分类元素的索引值
       this.currentIndex = index;
-    },
+    }, 50),
+
     // 鼠标移出事件的回调
     leaveIndex() {
       this.currentIndex = -1;
+    },
+
+    // 进行路由跳转
+    goSearch(event) {
+      // 编程式路由导航+事件委托
+      // 如何确定点击的是a标签：将子节点中的a标签加上自定义属性data-categoryName，其余节点没有
+      // 节点的dataset属性可以获取节点的自定义属性与属性值
+      // 如何确定是一级分类、二级分类还是三级分类：
+      let element = event.target;
+      let { categoryname, category1id, category2id, category3id } =
+        element.dataset;
+      if (categoryname) {
+        let location = { name: "search" };
+        let query = { categoryName: categoryname };
+        if (category1id) {
+          query.category1Id = category1id;
+        } else if (category2id) {
+          query.category2Id = category2id;
+        } else {
+          query.category3Id = category3id;
+        }
+        location.query = query;
+        this.$router.push(location);
+      }
     },
   },
   // 组件挂载完毕，就可以向服务器发送请求
