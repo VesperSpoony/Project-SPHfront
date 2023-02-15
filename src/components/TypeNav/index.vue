@@ -1,60 +1,62 @@
 <template>
   <div class="type-nav">
     <div class="container">
-      <div @mouseleave="leaveIndex">
+      <div @mouseleave="leaveShow" @mouseenter="enterShow">
         <h2 class="all">全部商品分类</h2>
         <!-- 三级联动 -->
-        <div class="sort">
-          <div class="all-sort-list2" @click="goSearch">
-            <div
-              class="item"
-              v-for="(c1, index) in categoryList"
-              :key="c1.categoryId"
-              :class="{ cur: currentIndex == index }"
-            >
-              <h3 @mouseenter="changeIndex(index)">
-                <a
-                  :data-categoryName="c1.categoryName"
-                  :data-category1Id="c1.categoryId"
-                  >{{ c1.categoryName }}</a
-                >
-                <!-- <router-link to="/search">{{ c1.categoryName }}</router-link> -->
-              </h3>
-              <!-- 二级、三级分类 -->
+        <transition name="sort">
+          <div class="sort" v-show="show">
+            <div class="all-sort-list2" @click="goSearch">
               <div
-                class="item-list clearfix"
-                :style="{ display: currentIndex == index ? 'block' : 'none' }"
+                class="item"
+                v-for="(c1, index) in categoryList"
+                :key="c1.categoryId"
+                :class="{ cur: currentIndex == index }"
               >
+                <h3 @mouseenter="changeIndex(index)">
+                  <a
+                    :data-categoryName="c1.categoryName"
+                    :data-category1Id="c1.categoryId"
+                    >{{ c1.categoryName }}</a
+                  >
+                  <!-- <router-link to="/search">{{ c1.categoryName }}</router-link> -->
+                </h3>
+                <!-- 二级、三级分类 -->
                 <div
-                  class="subitem"
-                  v-for="c2 in c1.categoryChild"
-                  :key="c2.categoryId"
+                  class="item-list clearfix"
+                  :style="{ display: currentIndex == index ? 'block' : 'none' }"
                 >
-                  <dl class="fore">
-                    <dt>
-                      <a
-                        :data-categoryName="c2.categoryName"
-                        :data-category2Id="c2.categoryId"
-                        >{{ c2.categoryName }}</a
-                      >
-                      <!-- <router-link to="/search">{{ c2.categoryName }}</router-link> -->
-                    </dt>
-                    <dd>
-                      <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                  <div
+                    class="subitem"
+                    v-for="c2 in c1.categoryChild"
+                    :key="c2.categoryId"
+                  >
+                    <dl class="fore">
+                      <dt>
                         <a
-                          :data-categoryName="c3.categoryName"
-                          :data-category3Id="c3.categoryId"
-                          >{{ c3.categoryName }}</a
+                          :data-categoryName="c2.categoryName"
+                          :data-category2Id="c2.categoryId"
+                          >{{ c2.categoryName }}</a
                         >
-                        <!-- <router-link to="/search">{{ c3.categoryName }}</router-link> -->
-                      </em>
-                    </dd>
-                  </dl>
+                        <!-- <router-link to="/search">{{ c2.categoryName }}</router-link> -->
+                      </dt>
+                      <dd>
+                        <em v-for="c3 in c2.categoryChild" :key="c3.categoryId">
+                          <a
+                            :data-categoryName="c3.categoryName"
+                            :data-category3Id="c3.categoryId"
+                            >{{ c3.categoryName }}</a
+                          >
+                          <!-- <router-link to="/search">{{ c3.categoryName }}</router-link> -->
+                        </em>
+                      </dd>
+                    </dl>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </transition>
       </div>
       <nav class="nav">
         <a href="###">服装城</a>
@@ -83,6 +85,7 @@ export default {
     return {
       // 存储用户鼠标移动到哪一个一级分类
       currentIndex: -1,
+      show: true,
     };
   },
   methods: {
@@ -93,8 +96,11 @@ export default {
     }, 50),
 
     // 鼠标移出事件的回调
-    leaveIndex() {
+    leaveShow() {
       this.currentIndex = -1;
+      if (this.$route.path != "/home") {
+        this.show = false;
+      }
     },
 
     // 进行路由跳转
@@ -116,14 +122,26 @@ export default {
         } else {
           query.category3Id = category3id;
         }
+        // 如果路由跳转时带有params参数，也需要传递
+        if (this.$route.params) {
+          location.params = this.$route.params;
+        }
         location.query = query;
         this.$router.push(location);
       }
     },
+
+    // 鼠标移入时让商品列表进行展示
+    enterShow() {
+      this.show = true;
+    },
   },
   // 组件挂载完毕，就可以向服务器发送请求
   mounted() {
-    this.$store.dispatch("categoryList");
+    // 如果不是Home路由组件，将TypeNav进行隐藏
+    if (this.$route.path != "/home") {
+      this.show = false;
+    }
   },
 
   computed: {
@@ -259,6 +277,25 @@ export default {
         //   background-color: skyblue;
         // }
       }
+    }
+
+    // 过渡动画样式
+    // 开始阶段
+    .sort-enter,
+    .sort-leave-to {
+      height: 0px;
+      // transform: rotate(0deg);
+    }
+    .sort-enter-to,
+    .sort-leave {
+      height: 461px;
+      // transform: rotate(360deg);
+    }
+    .sort-enter-active {
+      transition: all 0.5s linear;
+    }
+    .sort-leave-active {
+      transition: all 0.05s linear;
     }
   }
 }

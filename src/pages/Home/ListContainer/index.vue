@@ -5,18 +5,13 @@
         <!--banner轮播-->
         <div class="swiper-container" id="mySwiper">
           <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="./images/banner1.jpg" />
+            <div
+              class="swiper-slide"
+              v-for="carousel in bannerList"
+              :key="carousel.id"
+            >
+              <img :src="carousel.imgUrl" />
             </div>
-            <!-- <div class="swiper-slide">
-              <img src="./images/banner2.jpg" />
-            </div>
-            <div class="swiper-slide">
-              <img src="./images/banner3.jpg" />
-            </div>
-            <div class="swiper-slide">
-              <img src="./images/banner4.jpg" />
-            </div> -->
           </div>
           <!-- 如果需要分页器 -->
           <div class="swiper-pagination"></div>
@@ -100,8 +95,43 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+// 引入swiper
+import Swiper from "swiper";
 export default {
   name: "ListContainer",
+  mounted() {
+    this.$store.dispatch("getBannerList");
+    // new Swiper之前，页面中的结构必须要有
+  },
+  computed: {
+    ...mapState({
+      bannerList: (state) => state.home.bannerList,
+    }),
+  },
+  watch: {
+    // bannerList初始值空数组，当服务器的数据返回以后，它的bannerList存储的属性值会发生变化
+    bannerList: {
+      handler(newValue, oldValue) {
+        // nextTick在下次DOM更新,循环结束之后,执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的DOM。
+        this.$nextTick(() => {
+          let mySwiper = new Swiper(".swiper-container", {
+            loop: true,
+            // 分页器
+            pagination: {
+              el: ".swiper-pagination",
+              clickable: true,
+            },
+            // 左右按钮
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+          });
+        });
+      },
+    },
+  },
 };
 </script>
 
