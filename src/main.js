@@ -5,6 +5,10 @@ import App from './App.vue'
 import TypeNav from '@/components/TypeNav'
 Vue.component(TypeNav.name, TypeNav)
 
+// 轮播图组件--全局组件
+import Carousel from '@/components/Carousel'
+Vue.component(Carousel.name, Carousel)
+
 // 引入路由
 import router from '@/router'
 
