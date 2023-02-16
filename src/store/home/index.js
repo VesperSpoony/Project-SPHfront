@@ -1,4 +1,4 @@
-import { reqCategoryList, reqGetBannerList, reqFloorList } from '@/api';
+import { reqCategoryList, reqBannerList, reqFloorList } from '@/api';
 
 const state = {
     // state中数据初始值不能随意指定，根据接口的返回值初始化
@@ -27,7 +27,7 @@ const actions = {
     },
 
     async getBannerList({ commit }) {
-        let result = await reqGetBannerList();
+        let result = await reqBannerList();
         if (result.code == 200) {
             commit("GETBANNERLIST", result.data);
         }
