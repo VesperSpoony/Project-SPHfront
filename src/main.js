@@ -9,6 +9,10 @@ Vue.component(TypeNav.name, TypeNav)
 import Carousel from '@/components/Carousel'
 Vue.component(Carousel.name, Carousel)
 
+// 分页器组件--全局组件
+import Pagination from '@/components/Pagination'
+Vue.component(Pagination.name, Pagination)
+
 // 引入路由
 import router from '@/router'
 
@@ -25,6 +29,11 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
+
+  // 全局事件总线$bus
+  beforeCreate() {
+    Vue.prototype.$bus = this;
+  },
 
   // 注册路由
   router,

@@ -11,38 +11,63 @@
             </li>
           </ul>
           <ul class="fl sui-tag">
-            <li class="with-x">手机</li>
-            <li class="with-x">iphone<i>×</i></li>
-            <li class="with-x">华为<i>×</i></li>
-            <li class="with-x">OPPO<i>×</i></li>
+            <li class="with-x" v-if="searchParams.categoryName">
+              {{ searchParams.categoryName }}
+              <i @click="removeCategoryName">×</i>
+            </li>
+            <li class="with-x" v-if="searchParams.keyword">
+              {{ searchParams.keyword }}
+              <i @click="removeKeyword">×</i>
+            </li>
+            <li class="with-x" v-if="searchParams.trademark">
+              {{ searchParams.trademark.split(":")[1] }}
+              <i @click="removeTrademark">×</i>
+            </li>
+            <li
+              class="with-x"
+              v-for="(prop, index) in searchParams.props"
+              :key="index"
+            >
+              {{ prop.split(":")[1] }}
+              <i @click="removeAttr(index)">×</i>
+            </li>
           </ul>
         </div>
 
         <!--selector-->
-        <SearchSelector></SearchSelector>
+        <SearchSelector
+          @trademarkInfo="trademarkInfo"
+          @attrInfo="attrInfo"
+        ></SearchSelector>
 
         <!--details-->
         <div class="details clearfix">
           <div class="sui-navbar">
             <div class="navbar-inner filter">
               <ul class="sui-nav">
-                <li class="active">
-                  <a href="#">综合</a>
+                <li :class="{ active: isOrderOne }" @click="changeOrder(1)">
+                  <a
+                    >综合<span
+                      v-if="isOrderOne"
+                      class="iconfont"
+                      :class="{
+                        'icon-up': isOrderAsc,
+                        'icon-down': isOrderDesc,
+                      }"
+                    ></span
+                  ></a>
                 </li>
-                <li>
-                  <a href="#">销量</a>
-                </li>
-                <li>
-                  <a href="#">新品</a>
-                </li>
-                <li>
-                  <a href="#">评价</a>
-                </li>
-                <li>
-                  <a href="#">价格⬆</a>
-                </li>
-                <li>
-                  <a href="#">价格⬇</a>
+                <li :class="{ active: isOrderTwo }" @click="changeOrder(2)">
+                  <a
+                    >价格<span
+                      v-if="isOrderTwo"
+                      class="iconfont"
+                      :class="{
+                        'icon-up': isOrderAsc,
+                        'icon-down': isOrderDesc,
+                      }"
+                    ></span
+                  ></a>
                 </li>
               </ul>
             </div>
@@ -88,35 +113,7 @@
               </li>
             </ul>
           </div>
-          <div class="fr page">
-            <div class="sui-pagination clearfix">
-              <ul>
-                <li class="prev disabled">
-                  <a href="#">«上一页</a>
-                </li>
-                <li class="active">
-                  <a href="#">1</a>
-                </li>
-                <li>
-                  <a href="#">2</a>
-                </li>
-                <li>
-                  <a href="#">3</a>
-                </li>
-                <li>
-                  <a href="#">4</a>
-                </li>
-                <li>
-                  <a href="#">5</a>
-                </li>
-                <li class="dotted"><span>...</span></li>
-                <li class="next">
-                  <a href="#">下一页»</a>
-                </li>
-              </ul>
-              <div><span>共10页&nbsp;</span></div>
-            </div>
-          </div>
+          <Pagination></Pagination>
         </div>
       </div>
     </div>
@@ -124,7 +121,7 @@
 </template>
 
 <script>
-import SearchSelector from "./SearchSelector/SearchSelector";
+import SearchSelector from "./SearchSelector";
 import { mapGetters } from "vuex";
 export default {
   name: "Search",
@@ -142,8 +139,8 @@ export default {
         categoryName: "",
         // 关键字
         keyword: "",
-        // 排序
-        order: "",
+        // 排序：初始值 综合|降序
+        order: "1:desc",
         // 分页器：当前第几页
         pageNo: 1,
         // 分页器：每一页展示数据个数
@@ -164,21 +161,95 @@ export default {
   computed: {
     // mapGetters传递数组，因为getters计算没有划分home search模块
     ...mapGetters(["goodsList"]),
+    isOrderOne() {
+      return this.searchParams.order.indexOf("1") != -1;
+    },
+    isOrderTwo() {
+      return this.searchParams.order.indexOf("2") != -1;
+    },
+    isOrderAsc() {
+      return this.searchParams.order.indexOf("asc") != -1;
+    },
+    isOrderDesc() {
+      return this.searchParams.order.indexOf("desc") != -1;
+    },
   },
   methods: {
     // 向服务器发送请求获取search模块数据（根据参数不同返回不同的数据进行展示）
     getData() {
       // Object.assign  合并对象
-      Object.assign(this.searchParams, this.$route.query, this.$route.params);
+      // Object.assign(this.searchParams, this.$route.query, this.$route.params);
       this.$store.dispatch("getSearchList", this.searchParams);
       this.searchParams.category1Id = "";
       this.searchParams.category2Id = "";
       this.searchParams.category3Id = "";
     },
+
+    // 删除分类的名称
+    removeCategoryName() {
+      this.searchParams.categoryName = undefined;
+      this.searchParams.category1Id = undefined;
+      this.searchParams.category2Id = undefined;
+      this.searchParams.category3Id = undefined;
+      // this.getData();
+      // 地址栏也需要更改
+      this.$router.push({
+        name: "search",
+        params: this.$route.params,
+      });
+    },
+
+    removeKeyword() {
+      this.searchParams.keyword = undefined;
+      this.$router.push({
+        name: "search",
+        query: this.$route.query,
+      });
+      // 通知兄弟组件Header清除关键字
+      this.$bus.$emit("clear");
+    },
+
+    trademarkInfo(trademark) {
+      this.searchParams.trademark = `${trademark.tmId}:${trademark.tmName}`;
+      this.getData();
+    },
+
+    removeTrademark() {
+      this.searchParams.trademark = undefined;
+      this.getData();
+    },
+
+    attrInfo(attr, attrValue) {
+      let prop = `${attr.attrId}:${attrValue}:${attr.attrName}`;
+      if (this.searchParams.props.indexOf(prop) == -1) {
+        this.searchParams.props.push(prop);
+      }
+      this.getData();
+    },
+
+    removeAttr(index) {
+      this.searchParams.props.splice(index, 1);
+      this.getData();
+    },
+
+    changeOrder(flag) {
+      let originOrder = this.searchParams.order;
+      let originFlag = originOrder.split(":")[0];
+      let originSort = originOrder.split(":")[1];
+      let newOrder = "";
+      if (flag == originFlag) {
+        newOrder = `${originFlag}:${originSort == "desc" ? "asc" : "desc"}`;
+      } else {
+        newOrder = `${flag}:desc`;
+      }
+      this.searchParams.order = newOrder;
+      this.getData();
+    },
   },
   watch: {
     // 监听路由信息是否发生变化，如果发生变化，再次发起请求
     $route(newValue, oldValue) {
+      Object.assign(this.searchParams, this.$route.query, this.$route.params);
       this.getData();
     },
   },
