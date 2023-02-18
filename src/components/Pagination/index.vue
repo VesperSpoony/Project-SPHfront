@@ -1,23 +1,73 @@
 <template>
   <div class="pagination">
-    <button>上一页</button>
-    <button>1</button>
-    <button>···</button>
-    <button>3</button>
-    <button>4</button>
-    <button>5</button>
-    <button>6</button>
-    <button>7</button>
-    <button>···</button>
-    <button>9</button>
-    <button>下一页</button>
-    <button style="margin-left: 30px">共 60 条</button>
+    <button :disabled="pageNo == 1" @click="$emit('getPageNo', pageNo - 1)">
+      上一页
+    </button>
+    <button
+      v-if="startNumAndEndNum.start > 1"
+      @click="$emit('getPageNo', 1)"
+      :class="{ active: pageNo == 1 }"
+    >
+      1
+    </button>
+    <button v-if="startNumAndEndNum.start > 2">···</button>
+
+    <button
+      v-for="(page, index) in startNumAndEndNum.end"
+      :key="index"
+      v-show="page >= startNumAndEndNum.start"
+      @click="$emit('getPageNo', page)"
+      :class="{ active: pageNo == page }"
+    >
+      {{ page }}
+    </button>
+
+    <button v-if="startNumAndEndNum.end < totalPage - 1">···</button>
+    <button
+      v-if="startNumAndEndNum.end < totalPage"
+      @click="$emit('getPageNo', totalPage)"
+      :class="{ active: pageNo == totalPage }"
+    >
+      {{ totalPage }}
+    </button>
+    <button
+      :disabled="pageNo == totalPage"
+      @click="$emit('getPageNo', pageNo + 1)"
+    >
+      下一页
+    </button>
+    <button style="margin-left: 30px">共 {{ total }} 条</button>
   </div>
 </template>
 
 <script>
 export default {
   name: "Pagination",
+  props: ["pageNo", "pageSize", "total", "continues"],
+  computed: {
+    totalPage() {
+      return Math.ceil(this.total / this.pageSize);
+    },
+    startNumAndEndNum() {
+      let start = 0;
+      let end = 0;
+      if (this.continues > this.totalPage) {
+        start = 1;
+        end = this.totalPage;
+      } else {
+        start = this.pageNo - Math.floor(this.continues / 2);
+        end = this.pageNo + Math.floor(this.continues / 2);
+        if (start < 1) {
+          start = 1;
+          end = this.continues;
+        } else if (end > this.totalPage) {
+          end = this.totalPage;
+          start = this.totalPage - this.continues + 1;
+        }
+      }
+      return { start, end };
+    },
+  },
 };
 </script>
 
@@ -53,5 +103,8 @@ export default {
       color: #fff;
     }
   }
+}
+.active {
+  background-color: skyblue;
 }
 </style>
