@@ -4,6 +4,8 @@ import Search from '@/pages/Search'
 import Detail from '@/pages/Detail'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
+import AddCartSuccess from '@/pages/AddCartSuccess'
+import ShopCart from '@/pages/ShopCart'
 
 // 路由配置信息
 export default [
@@ -38,8 +40,23 @@ export default [
         // }
     },
     {
-        path: '/detail/:skuid',
+        path: '/detail/:skuId',
         component: Detail,
+        meta: {
+            show: true
+        }
+    },
+    {
+        path: '/addcartsuccess',
+        name: 'addcartsuccess',
+        component: AddCartSuccess,
+        meta: {
+            show: true
+        }
+    },
+    {
+        path: '/shopcart',
+        component: ShopCart,
         meta: {
             show: true
         }
@@ -58,6 +75,7 @@ export default [
             show: false
         }
     },
+
 
     // 重定向，在项目运行时，访问/立刻定向到首页
     {

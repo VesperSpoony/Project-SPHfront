@@ -28,8 +28,20 @@ export const reqFloorList = () => mockRequests.get('/floor');
 //     "trademark": "4:小米"
 // }
 // 当前接口给服务器传递一个默认参数，至少是一个空对象
-export const reqSearchInfo = (params) => requests({
+export const reqSearchInfo = params => requests({
     url: '/list',
     method: 'post',
     data: params
+});
+
+// 获取产品详情信息 /api/item/{ skuId } get 参数skuId
+export const reqGoodsInfo = skuId => requests({
+    url: `/item/${skuId}`,
+    method: 'get',
+});
+
+// 将产品添加到购物车（或更新某一个产品的个数）/api/cart/addToCart/{ skuId }/{ skuNum } post 参数skuId skuNum
+export const reqAddOrUpdateShopCart = (skuId, skuNum) => requests({
+    url: `/cart/addToCart/${skuId}/${skuNum}`,
+    method: 'post',
 });
