@@ -17,16 +17,6 @@ export const reqBannerList = () => mockRequests.get('/banner');
 export const reqFloorList = () => mockRequests.get('/floor');
 
 // 获取搜索模块数据 /api/list post 有参数
-// {
-//     "category3Id": "61",
-//     "categoryName": "手机",
-//     "keyword": "小米",
-//     "order": "1:desc",
-//     "pageNo": 1,
-//     "pageSize": 10,
-//     "props": ["1:1700-2799:价格", "2:6.65-6.74英寸:屏幕尺寸"],
-//     "trademark": "4:小米"
-// }
 // 当前接口给服务器传递一个默认参数，至少是一个空对象
 export const reqSearchInfo = params => requests({
     url: '/list',
@@ -45,3 +35,34 @@ export const reqAddOrUpdateShopCart = (skuId, skuNum) => requests({
     url: `/cart/addToCart/${skuId}/${skuNum}`,
     method: 'post',
 });
+
+// 获取购物车列表数据接口 /api/cart/cartList get 无参数
+export const reqCartList = () => requests({
+    url: '/cart/cartList',
+    method: 'get',
+});
+
+// 删除购物车产品接口 /api/cart/deleteCart/{skuId} delete 参数skuId
+export const reqDeleteCartById = skuId => requests({
+    url: `/cart/deleteCart/${skuId}`,
+    method: 'delete',
+});
+
+// 切换商品选中状态 /api/cart/checkCart/{skuId}/{isChecked} get 参数skuId isChecked
+export const reqUpdateCheckedById = (skuId, isChecked) => requests({
+    url: `/cart/checkCart/${skuId}/${isChecked}`,
+    method: 'get',
+})
+
+// 获取验证码 /api/user/passport/sendCode/{phone} get 参数phone
+export const reqGetCode = phone => requests({
+    url: `/user/passport/sendCode/${phone}`,
+    method: 'get',
+})
+
+// 用户注册 /api/user/passport/register post 参数phone code password
+export const reqUserRegister = data => requests({
+    url: '/user/passport/register',
+    data,
+    method: 'post',
+})
