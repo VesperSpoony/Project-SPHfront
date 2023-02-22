@@ -6,6 +6,7 @@ import Login from '@/pages/Login'
 import Register from '@/pages/Register'
 import AddCartSuccess from '@/pages/AddCartSuccess'
 import ShopCart from '@/pages/ShopCart'
+import Trade from '@/pages/Trade'
 
 // 路由配置信息
 export default [
@@ -71,6 +72,13 @@ export default [
     {
         path: '/register',
         component: Register,
+        meta: {
+            show: false
+        }
+    },
+    {
+        path: '/trade',
+        component: Trade,
         meta: {
             show: false
         }

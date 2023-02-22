@@ -91,6 +91,7 @@ export default {
         alert(error.message);
       }
     },
+    // 用户注册
     async userRegister() {
       try {
         const { phone, code, password, password1 } = this;

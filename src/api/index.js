@@ -66,3 +66,22 @@ export const reqUserRegister = data => requests({
     data,
     method: 'post',
 })
+
+// 用户登录 /api/user/passport/login post 参数phone password
+export const reqUserLogin = (data) => requests({
+    url: '/user/passport/login',
+    data,
+    method: 'post',
+})
+
+// 带token获取用户信息 /api/user/passport/auth/getUserInfo get 无参数
+export const reqGetUserInfo = () => requests({
+    url: '/user/passport/auth/getUserInfo',
+    method: 'get',
+})
+
+// 退出登录 /api/user/passport/logout get 无参数
+export const reqUserLogout = () => requests({
+    url: '/user/passport/logout',
+    method: 'get',
+})
