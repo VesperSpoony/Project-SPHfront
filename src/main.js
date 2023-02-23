@@ -13,6 +13,14 @@ Vue.component(Carousel.name, Carousel)
 import Pagination from '@/components/Pagination'
 Vue.component(Pagination.name, Pagination)
 
+// element-ui
+import { Button, MessageBox } from 'element-ui'
+// 方法1 注册全局组件
+Vue.component(Button.name, Button)
+// 方法2 挂载在原型上
+Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$alert = MessageBox.alert;
+
 // 引入路由
 import router from '@/router'
 
@@ -25,6 +33,10 @@ import '@/mock/mockServe'
 // 引入swiper样式
 import 'swiper/css/swiper.css'
 
+// 统一接口api文件夹内全部请求函数
+// 统一引入
+import * as API from '@/api'
+
 Vue.config.productionTip = false
 
 new Vue({
@@ -33,6 +45,7 @@ new Vue({
   // 全局事件总线$bus
   beforeCreate() {
     Vue.prototype.$bus = this;
+    Vue.prototype.$API = API;
   },
 
   // 注册路由
