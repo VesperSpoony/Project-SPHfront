@@ -14,9 +14,10 @@ import Pagination from '@/components/Pagination'
 Vue.component(Pagination.name, Pagination)
 
 // element-ui
-import { Button, MessageBox } from 'element-ui'
+import { Button, MessageBox, Input } from 'element-ui'
 // 方法1 注册全局组件
 Vue.component(Button.name, Button)
+Vue.component(Input.name, Input)
 // 方法2 挂载在原型上
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
