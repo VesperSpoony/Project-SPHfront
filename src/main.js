@@ -37,6 +37,20 @@ import 'swiper/css/swiper.css'
 // 统一引入
 import * as API from '@/api'
 
+// 引入图片懒加载插件
+import VueLazyload from 'vue-lazyload'
+import loading from './assets/loading.gif'
+Vue.use(VueLazyload, {
+  loading,
+})
+
+// 引入自定义插件
+import myPlugin from './plugins/myPlugin'
+Vue.use(myPlugin)
+
+// 引入表单验证插件
+import "@/plugins/validate";
+
 Vue.config.productionTip = false
 
 new Vue({
