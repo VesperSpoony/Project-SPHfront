@@ -42,7 +42,7 @@ export default {
       //VC:$children属性,可以获取当前组件的全部子组件[这个属性在用的时候很少用索引值获取子组件，因为没有办法确定数组里面的元素到底是哪一个子组件]
       this.money += 400;
       this.$children.forEach((item) => {
-          item.money -= 200;
+        item.money -= 200;
       });
     },
   },
