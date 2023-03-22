@@ -98,7 +98,13 @@ export default [
                 next();
             } else {
                 // 中断当前的导航，重置回from
-                next(false);
+                // 自改防bug
+                // next(false);
+                if (from.path.indexOf('/login' != -1)) {
+                    next('/home');
+                } else {
+                    next(false);
+                }
             }
         },
     },
