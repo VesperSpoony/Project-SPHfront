@@ -1,6 +1,6 @@
 // 引入路由组件
 //import Home from '@/pages/Home'
-import Search from '@/pages/Search'
+// import Search from '@/pages/Search'
 import Detail from '@/pages/Detail'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
