@@ -1,19 +1,19 @@
 // 引入路由组件
-//import Home from '@/pages/Home'
+// import Home from '@/pages/Home'
 // import Search from '@/pages/Search'
-import Detail from '@/pages/Detail'
-import Login from '@/pages/Login'
-import Register from '@/pages/Register'
-import AddCartSuccess from '@/pages/AddCartSuccess'
-import ShopCart from '@/pages/ShopCart'
-import Trade from '@/pages/Trade'
-import Pay from '@/pages/Pay'
-import PaySuccess from '@/pages/PaySuccess'
-import Center from '@/pages/Center'
+// import Detail from '@/pages/Detail'
+// import Login from '@/pages/Login'
+// import Register from '@/pages/Register'
+// import AddCartSuccess from '@/pages/AddCartSuccess'
+// import ShopCart from '@/pages/ShopCart'
+// import Trade from '@/pages/Trade'
+// import Pay from '@/pages/Pay'
+// import PaySuccess from '@/pages/PaySuccess'
+// import Center from '@/pages/Center'
 
 // 二级路由
-import MyOrder from '@/pages/Center/MyOrder'
-import GroupOrder from '@/pages/Center/GroupOrder'
+// import MyOrder from '@/pages/Center/MyOrder'
+// import GroupOrder from '@/pages/Center/GroupOrder'
 
 // 当打包构建应用时，JavaScript 包会变得非常大，影响页面加载。
 // 如果能把不同路由对应的组件分割成不同的代码块，然后当路由被访问的时候才加载对应组件，这样就会更加高效。
@@ -52,7 +52,7 @@ export default [
     },
     {
         path: '/detail/:skuId',
-        component: Detail,
+        component: () => import('@/pages/Detail'),
         meta: {
             show: true
         }
@@ -60,35 +60,35 @@ export default [
     {
         path: '/addcartsuccess',
         name: 'addcartsuccess',
-        component: AddCartSuccess,
+        component: () => import('@/pages/AddCartSuccess'),
         meta: {
             show: true
         }
     },
     {
         path: '/shopcart',
-        component: ShopCart,
+        component: () => import('@/pages/ShopCart'),
         meta: {
             show: true
         }
     },
     {
         path: '/login',
-        component: Login,
+        component: () => import('@/pages/Login'),
         meta: {
             show: true
         }
     },
     {
         path: '/register',
-        component: Register,
+        component: () => import('@/pages/Register'),
         meta: {
             show: true
         }
     },
     {
         path: '/trade',
-        component: Trade,
+        component: () => import('@/pages/Trade'),
         meta: {
             show: true
         },
@@ -98,7 +98,6 @@ export default [
                 next();
             } else {
                 // 中断当前的导航，重置回from
-                // 自改防bug
                 // next(false);
                 if (from.path.indexOf('/login' != -1)) {
                     next('/home');
@@ -110,7 +109,7 @@ export default [
     },
     {
         path: '/pay',
-        component: Pay,
+        component: () => import('@/pages/Pay'),
         meta: {
             show: true
         },
@@ -124,7 +123,7 @@ export default [
     },
     {
         path: '/paysuccess',
-        component: PaySuccess,
+        component: () => import('@/pages/PaySuccess'),
         meta: {
             show: true
         },
@@ -138,7 +137,7 @@ export default [
     },
     {
         path: '/center',
-        component: Center,
+        component: () => import('@/pages/Center'),
         meta: {
             show: true
         },
@@ -146,11 +145,11 @@ export default [
         children: [
             {
                 path: 'myorder',
-                component: MyOrder,
+                component: () => import('@/pages/Center/MyOrder'),
             },
             {
                 path: 'grouporder',
-                component: GroupOrder,
+                component: () => import('@/pages/Center/GroupOrder'),
             },
             {
                 path: '/center',

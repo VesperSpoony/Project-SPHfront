@@ -77,7 +77,7 @@
             ><i>{{ orderInfo.totalNum }}</i
             >件商品，总商品金额</b
           >
-          <span>¥5399.00</span>
+          <span>¥{{ orderInfo.totalAmount }}.00</span>
         </li>
         <li>
           <b>返现：</b>
